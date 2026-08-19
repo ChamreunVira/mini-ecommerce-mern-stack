@@ -1,25 +1,18 @@
-import React from 'react'
+import Hero from "@/components/home/Hero";
+import FeatureStrip from "@/components/home/FeatureStrip";
+import CategoryGrid from "@/components/home/CategoryGrid";
+import ProductSection from "@/components/home/ProductSection";
+import { getBestSellers } from "@/lib/data";
 
-const Home = () => {
+export default function HomePage() {
+  const bestSellers = getBestSellers(4);
+
   return (
-    <div className='h-screen w-full flex items-center justify-center'>
-
-      <div>
-        <h1 className='font-3xl font-semibold tracking-wider'>Chalange Building Mini-Ecommerce</h1>
-        <ul>
-          <li>Category</li>
-          <li>Product</li>
-          <li>Cart</li>
-          <li>Order</li>
-          <li>Checkout</li>
-          <li>Shipment</li>
-          <li>Promo code</li>
-          <li>KHQR Payment + Telegram Notification</li>
-        </ul>
-      </div>
-
+    <div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:px-6">
+      <Hero />
+      <FeatureStrip />
+      <CategoryGrid />
+      <ProductSection title="Best Selling Products" products={bestSellers} viewAllHref="/category/all" />
     </div>
-  )
+  );
 }
-
-export default Home

@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-export interface IAddress {
+export interface IAddress extends Document {
   phone: string;
   address: string;
   city: string;
@@ -18,33 +18,36 @@ export interface IUser extends Document {
   isAdmin: boolean;
 }
 
-const addressSchema = new Schema<IAddress>({
-  phone: {
-    type: String,
-    required: true,
+const addressSchema = new Schema<IAddress>(
+  {
+    phone: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    province: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    isDefault: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  province: {
-    type: String,
-    required: true,
-  },
-  country: {
-    type: String,
-    required: true,
-  },
-  isDefault: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
-});
+  { _id: true },
+);
 
 const userSchema = new Schema<IUser>(
   {

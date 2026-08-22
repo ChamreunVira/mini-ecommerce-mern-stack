@@ -6,5 +6,7 @@ const router = Router();
 
 router.get("/", asyncHandler(productController.getAll));
 router.post("/", asyncHandler(productController.create));
+router.delete("/:id", asyncHandler(productController.delete));
+router.get("/filter-price" , asyncHandler(productController.filterPrice));
 
 export default router;

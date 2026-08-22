@@ -76,17 +76,19 @@ export const categoryController = {
     });
   },
 
-  delete: async (req: Request, res: Response) => {
+  updateStatus: async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const category = await Category.findByIdAndDelete(id);
-    if (!category) {
-      throw new AppError(404, "Category not found.");
-    }
+    const category = await Category.findById(id);
+    if (!category) throw new AppError(404, "Category not found!");
+    category.status = !category.status;
+
+    const savedCategory = await category.save();
 
     res.status(200).json({
-      success: true,
-      message: "Category deleted successfully.",
+      success: false,
+      message: "Update status category successfully.",
+      data: savedCategory,
     });
   },
 };

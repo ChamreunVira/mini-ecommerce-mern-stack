@@ -69,12 +69,14 @@ const cartSchema = new Schema<ICart>(
 );
 
 cartSchema.methods.calculateTotals = function (this: ICart) {
+  console.log("This function is working normaly.");
   this.totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
   this.totalPrice = this.items.reduce((sum, item) => sum + item.subtotal, 0);
 };
 
-cartSchema.pre("save", function () {
+cartSchema.pre("save", function (next) {
   this.calculateTotals();
+  console.log("This function it's work normal");
 });
 
 export default model<ICart>("Cart", cartSchema);

@@ -359,11 +359,17 @@ PATCH  /api/categories/:id/status
 
 ### Products
 ```
-POST   /api/products
-GET    /api/products
-GET    /api/products/:id
-PATCH  /api/products/:id
-DELETE /api/products/:id
+Method	Path	Purpose
+POST	/api/v1/products	Create product, with variants inline or auto-generated from options
+GET	/api/v1/products	List/search products (filter by category, price, tags)
+GET	/api/v1/products/:productId	Get product with all its variants
+PATCH	/api/v1/products/:productId	Update base product fields
+DELETE	/api/v1/products/:productId	Archive/delete product
+POST	/api/v1/products/:productId/variants	Add one variant
+PATCH	/api/v1/products/:productId/variants/:variantId	Update a variant's price/attributes/etc
+PATCH	/api/v1/products/:productId/variants/:variantId/stock	Adjust stock by delta (atomic)
+DELETE	/api/v1/products/:productId/variants/:variantId	Remove/archive a variant
+GET	/api/v1/products/lookup?sku=...	Find a variant across the catalog by SKU/barcode
 ```
 
 ### Uploads
@@ -618,6 +624,19 @@ Banner, Setting — standalone, admin-managed
 
 ---
 
+### Banners *(added)*
+```
+GET    /api/banners                (public, active only, sorted by order)
+POST   /api/admin/banners
+GET    /api/admin/banners
+PATCH  /api/admin/banners/:id
+DELETE /api/admin/banners/:id
+PATCH  /api/admin/banners/:id/status
+```
+
+### Settings *(added)*
+```
+GET    /api/settings               (public,
 ## 13. Suggested File Mapping
 
 | Controller | Service | Handles |

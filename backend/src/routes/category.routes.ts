@@ -6,7 +6,7 @@ import { authenticat, authorization } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.post(
+router.patch(
   "/",
   authenticat,
   authorization,
@@ -20,6 +20,6 @@ router.put(
   uploads.single("image"),
   asyncHandler(categoryController.update),
 );
-router.delete("/:id", asyncHandler(categoryController.delete));
+router.patch("/:id/status", asyncHandler(categoryController.updateStatus));
 
 export default router;

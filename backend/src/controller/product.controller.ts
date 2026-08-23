@@ -195,20 +195,74 @@ export const productController = {
     } as any);
 
     const savedProduct = await product.save();
+    const newVaraints = savedProduct.variants[product.variants.length - 1];
     res.status(201).json({
       message: "Product variant was created.",
-      data: savedProduct,
+      data: newVaraints,
     });
   },
 
   updateVaraint: async (req: Request, res: Response) => {
-    const {productId, variantId} = req.params;
+    const { productId, variantId } = req.params;
     const { color, size, price, quantity, image } = req.body;
 
-    const product = await Product.findById(productId).select("variants");
-    if(!product) throw new AppError(404, "Product not found.");
-   
-    const variant
-   
-  }
+    const product = await Product.findById(productId);
+    if (!product) throw new AppError(404, "Product not found.");
+
+    const variants = product.variants.find(
+      (variant) => variant._id.toString() === variantId,
+    );
+
+    if (!variants) {
+      throw new AppError(404, "Variant not found.");
+    }
+
+    if (color !== undefined) {
+      variants.color = color;
+    }
+
+    if (size !== undefined) {
+      variants.size = size;
+    }
+
+    if (price !== undefined) {
+      variants.price = price;
+    }
+
+    if (quantity !== undefined) {
+      variants.quantity = quantity;
+    }
+
+    if (image !== undefined) {
+      variants.image = image;
+    }
+
+    await product.save();
+
+    const updatedVaraint = product.variants[product.variants.length - 1];
+
+    res.status(200).json({
+      message: "Product variant updated successfully.",
+      data: updatedVaraint,
+    });
+  },
+
+  deleteVaraint: async (req: Request, res: Response) => {
+    const { productId, variantId } = req.params;
+    const product = await Product.findById(productId);
+
+    if (!product) throw new AppError(404, "Product not found.");
+
+    const newVaraints = product.variants.filter(
+      (varaint) => varaint._id.toString() !== variantId,
+    );
+
+    product.variants = newVaraints;
+
+    await product.save();
+
+    res.status(200).json({
+      message: "Product varaint was deleted successfully"
+    });
+  },
 };

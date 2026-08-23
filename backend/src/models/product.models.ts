@@ -18,33 +18,36 @@ export interface IProduct extends Document {
   category: mongoose.Schema.Types.ObjectId;
 }
 
-const productVariantSchema = new Schema<IProductVariant>({
-  color: {
-    type: String,
-    required: true,
-  },
-  size: {
-    type: String,
-    enum: ["S", "M", "L", "XL", "2XL"],
-    require: true,
-  },
-  price: {
-    type: Number,
-    min: 0.0,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  image: [
-    {
+const productVariantSchema = new Schema<IProductVariant>(
+  {
+    color: {
       type: String,
       required: true,
     },
-  ],
-});
+    size: {
+      type: String,
+      enum: ["S", "M", "L", "XL", "2XL"],
+      require: true,
+    },
+    price: {
+      type: Number,
+      min: 0.0,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      min: 0,
+      required: true,
+    },
+    image: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+  },
+  { _id: true },
+);
 
 const productSchema = new Schema<IProduct>(
   {

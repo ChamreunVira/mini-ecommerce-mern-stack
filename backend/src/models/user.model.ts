@@ -30,11 +30,13 @@ const addressSchema = new Schema<IAddress>(
     },
     city: {
       type: String,
+      default: "Phnom Penh",
       required: true,
     },
     province: {
       type: String,
-      required: true,
+      min: 3,
+      max: 30
     },
     country: {
       type: String,

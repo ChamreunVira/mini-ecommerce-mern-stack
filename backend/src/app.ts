@@ -7,6 +7,7 @@ import productRoute from "./routes/product.routes.js";
 import uploadRoute from "./routes/uploads.routes.js";
 import cartRoute from "./routes/cart.routes.js";
 import authRoute from "./routes/auth.routes.js";
+import userRoute from "./routes/user.routes.js";
 
 import { errorHandler } from "./middleware/error.middleware.js";
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/api/products", productRoute);
 app.use("/api/uploads", uploadRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/cart", cartRoute);
+app.use("/api/user", userRoute)
 
 app.use(errorHandler);
 

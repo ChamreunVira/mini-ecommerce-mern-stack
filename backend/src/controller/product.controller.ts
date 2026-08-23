@@ -202,6 +202,13 @@ export const productController = {
   },
 
   updateVaraint: async (req: Request, res: Response) => {
-    const {req.}
+    const {productId, variantId} = req.params;
+    const { color, size, price, quantity, image } = req.body;
+
+    const product = await Product.findById(productId).select("variants");
+    if(!product) throw new AppError(404, "Product not found.");
+   
+    const variant
+   
   }
 };

@@ -9,18 +9,18 @@ const initialState: UsersState = {
   items: [
     {
       id: "u1",
-      name: "Tena Khimphun",
+      firstname: "Tena",
+      lastname: "Khimphun",
       email: "thannsopheakboth@gmail.com",
-      phone: "TEMP_1757652256439",
-      role: "ADMIN",
+      isAdmin: true,
       avatar: null,
     },
     {
       id: "u2",
-      name: "Thann Sopheakboth",
+      firstname: "Thann",
+      lastname: "Sopheakboth",
       email: "boththann76@gmail.com",
-      phone: "013222123",
-      role: "ADMIN",
+      isAdmin: true,
       avatar: "profile",
     },
   ],
@@ -34,13 +34,12 @@ const usersSlice = createSlice({
       reducer(state, action: PayloadAction<UserItem>) {
         state.items.push(action.payload);
       },
-      prepare(user: Partial<UserItem> & Pick<UserItem, "name" | "email">) {
+      prepare(user: Partial<UserItem> & Pick<UserItem, "firstname" | "lastname" | "email">) {
         return {
           payload: {
             id: nanoid(),
-            role: "ADMIN",
+            isAdmin: true,
             avatar: null,
-            phone: "",
             ...user,
           } as UserItem,
         };

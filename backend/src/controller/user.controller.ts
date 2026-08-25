@@ -11,7 +11,9 @@ export const userController = {
     const user = await User.findById(req.user?._id);
     if (!user) throw new AppError(404, "User not found.");
 
-    const addresses = user.addresses;
+    const addresses = [...(user.addresses || [])].sort(
+      (a, b) => Number(b.isDefault) - Number(a.isDefault),
+    );
 
     res.status(200).json({
       message: "Successfuly to retreive addresses.",
@@ -88,6 +90,9 @@ export const userController = {
     }
 
     if (isDefault !== undefined) {
+      if (isDefault) {
+        user.addresses?.forEach((address) => (address.isDefault = false));
+      }
       existingAddress.isDefault = isDefault;
     }
 
@@ -111,6 +116,8 @@ export const userController = {
 
     if (!newAddress) throw new AppError(404, "Address not found.");
 
+    user.addresses?.forEach((address) => (address.isDefault = false));
+
     newAddress.isDefault = !newAddress?.isDefault;
 
     await user.save();
@@ -127,16 +134,17 @@ export const userController = {
     const user = await User.findById(userId);
     if (!user) throw new AppError(404, "User not found.");
 
-    const newAddress = user.addresses?.filter(
-      (address) => address._id.toString() === addressId,
+    const newAddresses = user.addresses?.filter(
+      (address) => address._id.toString() !== addressId,
     );
-    user.addresses = newAddress;
+
+    user.addresses = newAddresses;
+    console.log(user.addresses);
 
     await user.save();
 
     res.status(200).json({
       message: "Address delete successfully.",
-      data: newAddress,
     });
   },
 };

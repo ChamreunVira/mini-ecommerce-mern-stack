@@ -59,7 +59,7 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`relative flex max-h-[calc(100vh-2rem)] w-full ${SIZES[size]} flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl`}
+        className={`relative flex max-h-[calc(100vh-2rem)] w-full ${SIZES[size]} flex-col overflow-hidden rounded-xl border border-gray-200 bg-white`}
       >
         <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-6 py-5">
           <div>

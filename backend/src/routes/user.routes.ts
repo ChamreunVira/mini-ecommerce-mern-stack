@@ -6,7 +6,11 @@ import { authenticat } from "../middleware/auth.middleware.js";
 const router = Router();
 
 //address
-router.get("/addresses", asyncHandler(userController.readAddresses));
+router.get(
+  "/addresses",
+  authenticat,
+  asyncHandler(userController.readAddresses),
+);
 router.post(
   "/addresses",
   authenticat,

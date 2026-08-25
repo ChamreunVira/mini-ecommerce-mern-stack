@@ -10,24 +10,35 @@ export interface CurrentUser {
 
 export interface UserItem {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  phone: string;
-  role: string;
+  isAdmin: boolean;
   avatar: string | null;
+}
+
+export type ProductSize = "S" | "M" | "L" | "XL" | "2XL";
+
+export interface ProductVariant {
+  id: string;
+  color: string;
+  size: ProductSize;
+  price: number;
+  quantity: number;
+  images: string[];
 }
 
 export interface Product {
   id: string;
   name: string;
-  basePrice: number;
+  description: string;
+  price: number;
   discount: number;
   category: string;
-  collection: string;
-  stock: number;
-  code: string;
+  quantity: number;
+  images: string[];
+  variants: ProductVariant[];
   status: string;
-  image: string;
   imageColor: string;
 }
 

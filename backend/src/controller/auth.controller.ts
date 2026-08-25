@@ -5,7 +5,6 @@ import { generateToken } from "../utils/index.js";
 import { AppError } from "../types/AppError.js";
 
 export const authController = {
-
   register: async (req: Request, res: Response) => {
     const { firstname, lastname, email, password } = req.body;
 
@@ -86,11 +85,9 @@ export const authController = {
   },
 
   me: async (req: Request, res: Response) => {
-    console.log(req.user?._id);
     const user = await User.findById(req.user?._id);
     res.status(200).json({
       data: user,
     });
   },
-  
 };

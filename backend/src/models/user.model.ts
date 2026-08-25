@@ -1,6 +1,7 @@
 import { Document, model, Schema } from "mongoose";
 
 export interface IAddress extends Document {
+  fullName: string;
   phone: string;
   address: string;
   city: string;
@@ -14,12 +15,22 @@ export interface IUser extends Document {
   lastname: string;
   email: string;
   hashPassword: string;
+  gender?: string;
+  telephone?: string;
   addresses?: IAddress[];
+  province?: string;
+  city?: string;
+  country: string;
   isAdmin: boolean;
+  status: boolean;
 }
 
 const addressSchema = new Schema<IAddress>(
   {
+    fullName: {
+      type: String,
+      required: true,
+    },
     phone: {
       type: String,
       required: true,
@@ -36,7 +47,7 @@ const addressSchema = new Schema<IAddress>(
     province: {
       type: String,
       min: 3,
-      max: 30
+      max: 30,
     },
     country: {
       type: String,
@@ -70,6 +81,7 @@ const userSchema = new Schema<IUser>(
     email: {
       type: String,
       unique: true,
+      index: true,
       required: true,
     },
     hashPassword: {
@@ -78,10 +90,32 @@ const userSchema = new Schema<IUser>(
       maxLength: 100,
       required: true,
     },
+    gender: {
+      type: String,
+      enum: ["M", "F", "O"],
+    },
+    telephone: {
+      type: String,
+      minLength: 9,
+      maxLength: 15,
+    },
+    province: {
+      type: String,
+    },
+    country: {
+      type: String,
+      default: "Cambodia",
+      required: true,
+    },
     addresses: [addressSchema],
     isAdmin: {
       type: Boolean,
       default: false,
+      required: true,
+    },
+    status: {
+      type: Boolean,
+      default: true,
       required: true,
     },
   },

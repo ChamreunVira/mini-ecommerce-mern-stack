@@ -3,17 +3,17 @@ import { UserItem } from "@/types";
 import { commit, FieldErrors, isBlank, isEmail } from "./support";
 
 export interface UserInput {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  phone: string;
-  role: string;
+  isAdmin: boolean;
 }
 
 export const EMPTY_USER: UserInput = {
-  name: "",
+  firstname: "",
+  lastname: "",
   email: "",
-  phone: "",
-  role: "ADMIN",
+  isAdmin: false,
 };
 
 /**
@@ -26,7 +26,8 @@ export function validateUser(
 ): FieldErrors<UserInput> {
   const errors: FieldErrors<UserInput> = {};
 
-  if (isBlank(input.name)) errors.name = "Name is required.";
+  if (isBlank(input.firstname)) errors.firstname = "First name is required.";
+  if (isBlank(input.lastname)) errors.lastname = "Last name is required.";
 
   if (isBlank(input.email)) {
     errors.email = "Email is required.";
@@ -36,20 +37,15 @@ export function validateUser(
     errors.email = "That email is already in use.";
   }
 
-  if (!isBlank(input.phone) && input.phone.trim().length < 6) {
-    errors.phone = "Phone number looks too short.";
-  }
-  if (isBlank(input.role)) errors.role = "Role is required.";
-
   return errors;
 }
 
 function normalize(input: UserInput) {
   return {
     ...input,
-    name: input.name.trim(),
+    firstname: input.firstname.trim(),
+    lastname: input.lastname.trim(),
     email: input.email.trim(),
-    phone: input.phone.trim(),
   };
 }
 
@@ -82,9 +78,9 @@ export const userService = {
 
 export function toUserInput(user: UserItem): UserInput {
   return {
-    name: user.name,
+    firstname: user.firstname,
+    lastname: user.lastname,
     email: user.email,
-    phone: user.phone,
-    role: user.role,
+    isAdmin: user.isAdmin,
   };
 }

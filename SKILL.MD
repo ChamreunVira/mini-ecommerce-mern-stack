@@ -1,1 +1,2 @@
 [text](../../../Documents/inspire_dashboard_landing_page)
+take a look a file README_BE.md and schama for structure data and endpoint to manage in front end and change content inside table but don't changed style(color, rounded, or somthing else) do not if feature does exists in back end if readme_be.md have been writing but backend does not implement ready do not implement those feature on my back end also do not implement waiting for my prompt letter

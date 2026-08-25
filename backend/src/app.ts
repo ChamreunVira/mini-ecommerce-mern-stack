@@ -2,12 +2,14 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
+
 import categoryRoute from "./routes/category.routes.js";
 import productRoute from "./routes/product.routes.js";
 import uploadRoute from "./routes/uploads.routes.js";
 import cartRoute from "./routes/cart.routes.js";
 import authRoute from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
+import orderRouter from "./routes/order.routes.js";
 
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
@@ -35,7 +37,8 @@ app.use("/api/products", productRoute);
 app.use("/api/uploads", uploadRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/cart", cartRoute);
-app.use("/api/user", userRoute)
+app.use("/api/user", userRoute);
+app.use("/api/orders", orderRouter);
 
 app.use(errorHandler);
 

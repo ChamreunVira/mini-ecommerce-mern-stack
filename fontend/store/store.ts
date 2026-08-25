@@ -8,6 +8,9 @@ import bannersReducer from "./slices/bannersSlice";
 import ordersReducer from "./slices/ordersSlice";
 import dashboardReducer from "./slices/dashboardSlice";
 import settingsReducer from "./slices/settingsSlice";
+import cartReducer from "./slices/cartSlice";
+import wishlistReducer from "./slices/wishlistSlice";
+import uiReducer from "./slices/uiSlice";
 
 export function makeStore() {
   return configureStore({
@@ -20,6 +23,9 @@ export function makeStore() {
       orders: ordersReducer,
       dashboard: dashboardReducer,
       settings: settingsReducer,
+      cart: cartReducer,
+      wishlist: wishlistReducer,
+      ui: uiReducer,
     },
   });
 }

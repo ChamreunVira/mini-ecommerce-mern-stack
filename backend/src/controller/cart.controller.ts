@@ -3,6 +3,7 @@ import Cart from "../models/cart.model.js";
 import Product from "../models/product.models.js";
 import { AppError } from "../types/AppError.js";
 import { Types } from "mongoose";
+import { calculateItemPricing } from "../utils/pricing.util.js";
 
 export const cartController = {
   readCart: async (req: Request, res: Response) => {
@@ -11,29 +12,41 @@ export const cartController = {
   },
 
   addItem: async (req: Request, res: Response) => {
-    const { productId, quantity } = req.body;
+    const { productId, quantity, variantSku } = req.body;
     const product = await Product.findById(productId);
 
     if (!product) throw new AppError(404, "Product not found.");
 
-    if(product.quantity < quantity) throw new AppError(404, "Insufficient stock.");
+    if (product.quantity < quantity) throw new AppError(400, "Insufficient stock.");
 
     const cart = await getOrCreateCart(req.user!._id);
 
     const existingItem = cart.items.find((item) =>
-      item.product.equals(productId),
+      item.product.equals(productId) && (variantSku ? item.variantSku === variantSku : true),
+    );
+
+    const itemPricing = calculateItemPricing(
+      product.price,
+      quantity,
+      product.discount,
     );
 
     if (existingItem) {
       existingItem.quantity += quantity;
-      existingItem.subtotal = existingItem.price * existingItem.quantity;
+      const totalPricing = calculateItemPricing(
+        product.price,
+        existingItem.quantity,
+        product.discount,
+      );
+      existingItem.subtotal = totalPricing.subtotal;
     } else {
       cart.items.push({
         product: new Types.ObjectId(productId),
         name: product.name,
-        price: product.price,
+        variantSku: variantSku || "",
+        price: itemPricing.price,
         quantity,
-        subtotal: product.price * quantity,
+        subtotal: itemPricing.subtotal,
       } as any);
     }
 
@@ -53,48 +66,37 @@ export const cartController = {
 
     const product = await Product.findById(productId);
     if (!product) throw new AppError(404, "Product not found.");
-    
-    if(product.quantity < quantity) throw new AppError(404, "Insufficient stock.");
 
-    // const existingItem = cart.items.find((item) =>
-    //   item.product.equals(product._id),
-    // );
+    if (product.quantity < quantity) throw new AppError(400, "Insufficient stock.");
 
-    const item = cart.items.find((item) => item.product.equals(product._id));
     const itemIndex = cart.items.findIndex((item) =>
       item.product.equals(product._id),
     );
 
-    if (item) {
+    if (itemIndex > -1) {
+      const item = cart.items[itemIndex];
       item.quantity = quantity;
-      item.subtotal = item.price * quantity;
+      const updatedPricing = calculateItemPricing(
+        product.price,
+        quantity,
+        product.discount,
+      );
+      item.price = updatedPricing.price;
+      item.subtotal = updatedPricing.subtotal;
 
       cart.items[itemIndex] = item;
       const savedCart = await cart.save();
 
       res.status(200).json({
-        message: "Cart updated succesfully.",
+        message: "Cart updated successfully.",
         data: savedCart,
       });
     } else {
       res.status(404).json({
-        message: "Item not found.",
+        message: "Item not found in cart.",
       });
       return;
     }
-
-    // if (existingItem) {
-    //   existingItem.quantity += quantity;
-    //   existingItem.subtotal += quantity * existingItem.price;
-
-    //   cart.items.push(existingItem);
-    //   const updateCart = await cart.save();
-
-    //   res.status(200).json({
-    //     message: "Cart updated successfully.",
-    //     data: updateCart,
-    //   });
-    // }
   },
 
   removeItem: async (req: Request, res: Response) => {
@@ -119,21 +121,21 @@ export const cartController = {
     const savedCart = await cart.save();
 
     res.status(200).json({
-      message: "Delete item from card successfully.",
+      message: "Item removed from cart successfully.",
       data: savedCart,
     });
   },
 
   clearItem: async (req: Request, res: Response) => {
     const cart = await Cart.findOne({ user: req.user!._id });
-    if (!cart) throw new AppError(400, "Cart not found.");
+    if (!cart) throw new AppError(404, "Cart not found.");
 
     cart.items = [];
 
     const savedCart = await cart.save();
 
     res.status(200).json({
-      message: "All items have been clear successfully.",
+      message: "All items have been cleared successfully.",
       data: savedCart,
     });
   },

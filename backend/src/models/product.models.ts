@@ -1,7 +1,10 @@
 import mongoose, { Document, model, Schema } from "mongoose";
+import { generateSku } from "../utils/index.js";
+
 export interface IProductVariant extends Document {
   color: string;
   size: "S" | "M" | "L" | "XL" | "2XL";
+  variantSku: string;
   price: number;
   quantity: number;
   image: string[];
@@ -24,10 +27,17 @@ const productVariantSchema = new Schema<IProductVariant>(
       type: String,
       required: true,
     },
+    variantSku: {
+      type: String,
+      default: function (this: any) {
+        return generateSku("VAR", this.color, this.size);
+      },
+      required: true,
+    },
     size: {
       type: String,
       enum: ["S", "M", "L", "XL", "2XL"],
-      require: true,
+      required: true,
     },
     price: {
       type: Number,
@@ -56,6 +66,7 @@ const productSchema = new Schema<IProduct>(
       minLength: 3,
       maxLength: 50,
       trim: true,
+      index: true,
       required: true,
     },
     description: {
@@ -63,6 +74,7 @@ const productSchema = new Schema<IProduct>(
       minLength: 5,
       maxLength: 500,
       trim: true,
+      index: true,
       required: true,
     },
     price: {
@@ -96,4 +108,16 @@ const productSchema = new Schema<IProduct>(
   { timestamps: true },
 );
 
-export default model("Product", productSchema);
+productSchema.index({ category: 1, price: 1 });
+
+productSchema.pre("save", function () {
+  if (this.variants && Array.isArray(this.variants)) {
+    this.variants.forEach((variant) => {
+      if (!variant.variantSku) {
+        variant.variantSku = generateSku(this.name || "PRODUCT", variant.color, variant.size);
+      }
+    });
+  }
+});
+
+export default model<IProduct>("Product", productSchema);

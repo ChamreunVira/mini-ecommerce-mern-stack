@@ -10,7 +10,7 @@ interface TopbarProps {
 
 export default function Topbar({ onToggleSidebar }: TopbarProps) {
   const currentUser = useAppSelector((state) => state.auth.currentUser);
-  const fullName = `${currentUser.firstName} ${currentUser.lastName}`;
+  const fullName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : "Guest";
 
   return (
     <header className="h-[73px] shrink-0 border-b border-gray-200 bg-white flex items-center justify-between px-6">

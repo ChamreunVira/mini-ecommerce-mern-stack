@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import Product from "../models/product.models.js";
+import Product, { IProductVariant } from "../models/product.models.js";
 import Category from "../models/category.model.js";
 import { PaginationResponse } from "../types/Pagination.js";
 import { AppError } from "../types/AppError.js";
+import { generateSku } from "../utils/index.js";
 
 export const productController = {
   create: async (req: Request, res: Response) => {
@@ -63,6 +64,8 @@ export const productController = {
       throw new AppError(400, "Category is in active.");
     }
 
+    normalizeVaraints(name , variants);
+
     const newProduct = new Product({
       name,
       description,
@@ -110,8 +113,8 @@ export const productController = {
         totalPages,
         currentPage: page,
         limit,
-        hasPrevPage: page < totalPages,
-        hasNextPage: 1 < totalPages,
+        hasPrevPage: page > 1,
+        hasNextPage: page < totalPages,
       },
     };
 
@@ -189,6 +192,7 @@ export const productController = {
     product.variants.push({
       color,
       size,
+      variantSku: generateSku(product.name, color, size),
       price,
       quantity,
       image,
@@ -266,3 +270,9 @@ export const productController = {
     });
   },
 };
+
+const normalizeVaraints = (name: string, varaints: IProductVariant[]) => {
+  varaints.forEach(varaint => {
+    varaint.variantSku = generateSku(name, varaint.color, varaint.size);
+  })
+}

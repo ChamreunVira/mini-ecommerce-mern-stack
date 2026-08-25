@@ -11,7 +11,8 @@ module.exports = {
         ink: "#0a0a0a",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Inter", "Kantumruy Pro", "ui-sans-serif", "system-ui", "sans-serif"],
+        khmer: ["Kantumruy Pro", "Inter", "sans-serif"],
       },
     },
   },

@@ -37,7 +37,7 @@ export default function OrdersPage() {
             {orders.map((o) => (
               <tr key={o.id} className="border-b border-gray-100 last:border-0 text-sm">
                 <td className="py-4 pl-5 font-medium text-ink">{o.orderNumber}</td>
-                <td className="py-4 pr-4 text-ink">{o.customer}</td>
+                <td className="py-4 pr-4 text-ink">{o.shippingAddress.fullName}</td>
                 <td className="py-4 pr-4 text-ink">${o.total.toFixed(2)}</td>
                 <td className="py-4 pr-4">
                   <StatusBadge status={o.status} />

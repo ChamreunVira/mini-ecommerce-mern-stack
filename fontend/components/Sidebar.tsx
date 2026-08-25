@@ -23,14 +23,14 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
-  { href: "/products", label: "Products", icon: Boxes },
-  { href: "/collections", label: "Collections", icon: LayoutGrid },
-  { href: "/coupons", label: "Coupons", icon: Ticket },
-  { href: "/orders", label: "Orders", icon: FileText },
-  { href: "/users", label: "Users", icon: Users },
-  { href: "/banners", label: "Banners", icon: Tv },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/admin/dashboard", label: "Dashboard", icon: Home },
+  { href: "/admin/products", label: "Products", icon: Boxes },
+  { href: "/admin/collections", label: "Collections", icon: LayoutGrid },
+  { href: "/admin/coupons", label: "Coupons", icon: Ticket },
+  { href: "/admin/orders", label: "Orders", icon: FileText },
+  { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/banners", label: "Banners", icon: Tv },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 interface SidebarProps {

@@ -1,9 +1,11 @@
 import { NextFunction } from "express";
 import mongoose, { Document, model, Schema } from "mongoose";
+import { generateSku } from "../utils/index.js";
 
 export interface ICartItem extends Document {
   product: mongoose.Types.ObjectId;
   name: string;
+  variantSku?: string;
   quantity: number;
   price: number;
   subtotal: number;
@@ -15,6 +17,7 @@ export interface ICart extends Document {
   totalItems: number;
   totalPrice: number;
   calculateTotals: () => void;
+  generateSku: () => string;
 }
 
 const cartItemSchema = new Schema<ICartItem>(
@@ -22,6 +25,11 @@ const cartItemSchema = new Schema<ICartItem>(
     product: {
       type: mongoose.Types.ObjectId,
       ref: "Product",
+      required: true,
+    },
+    variantSku: {
+      type: String,
+      default: "",
       required: true,
     },
     name: {
@@ -68,15 +76,15 @@ const cartSchema = new Schema<ICart>(
   { timestamps: true },
 );
 
+cartSchema.index({ _id: 1, product: 1, variantSku: 1 });
+
 cartSchema.methods.calculateTotals = function (this: ICart) {
-  console.log("This function is working normaly.");
   this.totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
   this.totalPrice = this.items.reduce((sum, item) => sum + item.subtotal, 0);
 };
 
-cartSchema.pre("save", function (next) {
-  this.calculateTotals();
-  console.log("This function it's work normal");
+cartSchema.pre("save", function () {
+  this.calculateTotals()
 });
 
 export default model<ICart>("Cart", cartSchema);

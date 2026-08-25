@@ -1,34 +1,36 @@
-import { Schema } from "mongoose";
+import { model, Schema, Document, Types } from "mongoose";
 import { IAddress } from "./user.model.js";
 
-interface IShipmentAddress extends Omit<IAddress, "isDefault"> {}
+export interface IShipmentAddress extends Omit<IAddress, "isDefault"> {}
 
-interface IPayment {
-  qrString: string;
-  md5: string;
-  transactionId: string;
-  status: "UNPAID" | "PENDING" | "PAID" | "FAILED";
-  amount: Number;
-  currenty: "KHR" | "USD";
-  qrExpiresAt: Date;
-  paidAt: Date;
+export interface IOrderItem {
+  product: Types.ObjectId;
+  variantSku?: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+  subtotal: number;
 }
 
-interface IOrder {
+export interface IOrder extends Document {
   orderNumber: string;
-  user: Schema.Types.ObjectId;
+  user: Types.ObjectId;
   status: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-  shipppingAddress: IShipmentAddress;
-  payment: IPayment;
+  shippingAddress: IShipmentAddress;
+  orderItems: IOrderItem[];
+  couponCode?: string;
   subtotal: number;
   shippingFee: number;
-  tax: number;
   discount: number;
   total: number;
 }
 
 const shipmentSchema = new Schema<IShipmentAddress>(
   {
+    fullName: {
+      type: String,
+    },
     phone: {
       type: String,
       required: true,
@@ -39,6 +41,7 @@ const shipmentSchema = new Schema<IShipmentAddress>(
     },
     city: {
       type: String,
+      default: "Phnom Penh",
     },
     province: {
       type: String,
@@ -52,81 +55,107 @@ const shipmentSchema = new Schema<IShipmentAddress>(
   { _id: true },
 );
 
-const paymentSchema = new Schema<IPayment>({
-  qrString: {
-    type: String,
-    required: true,
+export const orderItemSchema = new Schema<IOrderItem>(
+  {
+    product: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    variantSku: {
+      type: String,
+      default: "",
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      default: 0.0,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    subtotal: {
+      type: Number,
+      default: 0.0,
+      required: true,
+    },
   },
-  md5: {
-    type: String,
-    required: true,
-  },
-  transactionId: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ["UNPAID", "PEDING", "PAID", "FAILED"],
-    default: "PENDING",
-    required: true,
-  },
-  amount: {
-    type: Number,
-    default: 0.0,
-    required: true,
-  },
-  currenty: {
-    type: String,
-    default: "USD",
-    enum: ["USD", "KHR"],
-    required: true,
-  },
-  qrExpiresAt: {
-    type: Date,
-    required: true,
-  },
-  paidAt: {
-    type: Date,
-  },
-});
+  { _id: true },
+);
 
 const orderSchema = new Schema<IOrder>(
   {
     orderNumber: {
       type: String,
-      required: true,
+      unique: true,
     },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
-    shipppingAddress: [shipmentSchema],
-
-    payment: [paymentSchema],
-
-    subtotal: {
+    orderItems: [orderItemSchema],
+    shippingAddress: shipmentSchema,
+    couponCode: {
+      type: String,
+      default: "",
+    },
+    status: {
+      type: String,
+      enum: ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"],
+      default: "PENDING",
+      required: true,
+    },
+    shippingFee: {
       type: Number,
       default: 0.0,
       required: true,
     },
-
-    shippingFee: {
-      type: Number,
-      default: 0.0,
-    },
-
-    tax: {
-      type: Number,
-      default: 0.0,
-    },
-
     discount: {
       type: Number,
       default: 0.0,
+      required: true,
+    },
+    subtotal: {
+      type: Number,
+      required: true,
+    },
+    total: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true },
 );
+
+orderSchema.pre("save", async function () {
+  if (!this.isNew || this.orderNumber) {
+    return;
+  }
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const dateString = `${year}${month}${day}`;
+
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let randomCode = "";
+  for (let i = 0; i < 6; i++) {
+    randomCode += characters.charAt(
+      Math.floor(Math.random() * characters.length),
+    );
+  }
+  this.orderNumber = `ORD-${dateString}-${randomCode}`;
+});
+
+export default model<IOrder>("Order", orderSchema);

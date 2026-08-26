@@ -90,13 +90,7 @@ const buildOrderItems = async (cart: any, productMap: Map<string, any>) => {
   return { orderItems, totalItemDiscount };
 };
 
-const createOrderRecord = async ({
-  userId,
-  shipment,
-  orderItems,
-  couponCode,
-  shippingFee = 0,
-}: {
+const createOrderRecord = async ({ userId, shipment, orderItems, couponCode, shippingFee = 0}: {
   userId: string;
   shipment: any;
   orderItems: IOrderItem[];

@@ -10,6 +10,7 @@ import cartRoute from "./routes/cart.routes.js";
 import authRoute from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
 import orderRouter from "./routes/order.routes.js";
+import paymentRouter from "./routes/payment.routes.js";
 
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
@@ -39,6 +40,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/user", userRoute);
 app.use("/api/orders", orderRouter);
+app.use("/api/payment", paymentRouter);
 
 app.use(errorHandler);
 

@@ -1,28 +1,34 @@
 import { model, Schema } from "mongoose";
 
 interface IPayment {
-  qrString: string;
-  md5: string;
+  order: Schema.Types.ObjectId;
+  qrString?: string;
+  md5?: string;
   transactionId: string;
   status: "UNPAID" | "PENDING" | "PAID" | "FAILED";
   amount: Number;
   currenty: "KHR" | "USD";
-  qrExpiresAt: Date;
-  paidAt: Date;
+  qrExpiresAt?: Date;
+  paidAt?: Date;
 }
 
 const paymentSchema = new Schema<IPayment>({
+  order: {
+    type: Schema.Types.ObjectId,
+    ref: "Order",
+    required: true
+  },
   qrString: {
     type: String,
-    required: true,
   },
   md5: {
     type: String,
-    required: true,
   },
   transactionId: {
     type: String,
     required: true,
+    unique: true,
+    index: true,
   },
   status: {
     type: String,
@@ -43,7 +49,6 @@ const paymentSchema = new Schema<IPayment>({
   },
   qrExpiresAt: {
     type: Date,
-    required: true,
   },
   paidAt: {
     type: Date,

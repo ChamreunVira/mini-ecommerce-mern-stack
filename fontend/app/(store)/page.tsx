@@ -15,7 +15,11 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/store/ProductCard";
 import HeroCarousel from "@/components/store/HeroCarousel";
-import { Product } from "@/types";
+import { Category, Product } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useEffect, useState } from "react";
+import { fetchCategories } from "@/store/slices/categorySlice";
+import Image from "next/image";
 
 // ─── Mock data — replace with API calls ──────────────────────────────────────
 
@@ -67,8 +71,21 @@ function Stars({ rating }: { rating: number }) {
 // ─── Home Page ────────────────────────────────────────────────────────────────
 
 export default function StorePage() {
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const dispatch = useAppDispatch();
+  const { categories, loading, error } = useAppSelector((state) => state.categories);
+
   const newArrivals = MOCK_PRODUCTS.slice(0, 4);
   const trending = MOCK_PRODUCTS.slice(4, 8);
+
+  const extractProduct = (categories: Category[]) => {
+    return categories.flatMap(category => category.products);
+  }
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   return (
     <div className="text-[#0a0a0a]">
@@ -102,30 +119,28 @@ export default function StorePage() {
             <Grid size={20} />
           </div>
           <div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0a0a0a] tracking-tight leading-snug">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[#0a0a0a] tracking-tight leading-10">
               ទិញតាមប្រភេទ
             </h2>
-            <p className="text-xs sm:text-sm text-gray-500 font-medium">
+            <p className="text-sm text-gray-500 font-medium leading-loose ">
               ជ្រើសរើសប្រភេទសំលៀកបំពាក់ និងគ្រឿងបន្លាស់ដែលអ្នកចូលចិត្ត
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {MOCK_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <Link
-              key={cat.slug}
+              key={cat._id}
               href={`/products?category=${cat.slug}`}
               className="group relative overflow-hidden aspect-[3/4] block rounded-sm border border-gray-200 hover:shadow-sm transition-shadow duration-300"
             >
-              <div
-                className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                style={{ backgroundColor: cat.color }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className={`absolute inset-0 transition-transform duration-500 group-hover:scale-105`} />
+              <img src={`http://localhost:5000/uploads/${cat.image}`} alt="" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-5">
                 <p className="text-white font-extrabold text-base sm:text-lg leading-snug">{cat.name}</p>
-                <p className="text-gray-300 text-xs mt-1 font-medium">{cat.count} ផលិតផល</p>
+                <p className="text-gray-300 text-xs mt-1 font-medium">{cat.products.length} ផលិតផល</p>
               </div>
             </Link>
           ))}

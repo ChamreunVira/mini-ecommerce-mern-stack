@@ -14,7 +14,6 @@ interface Slide {
   ctaLink: string;
   secondaryCtaText: string;
   secondaryCtaLink: string;
-  bgGradient: string;
   accentIcon: any;
 }
 
@@ -29,7 +28,6 @@ const SLIDES: Slide[] = [
     ctaLink: "/products",
     secondaryCtaText: "មើល Collection",
     secondaryCtaLink: "/products?filter=newest",
-    bgGradient: "from-gray-950 via-gray-900 to-stone-900",
     accentIcon: Sparkles,
   },
   {
@@ -42,7 +40,6 @@ const SLIDES: Slide[] = [
     ctaLink: "/products?filter=sale",
     secondaryCtaText: "ផលិតផលបញ្ចុះតម្លៃ",
     secondaryCtaLink: "/products?filter=sale",
-    bgGradient: "from-stone-950 via-zinc-900 to-amber-950",
     accentIcon: Tag,
   },
   {
@@ -55,10 +52,15 @@ const SLIDES: Slide[] = [
     ctaLink: "/products?category=Women",
     secondaryCtaText: "មើលម៉ូដពេញនិយម",
     secondaryCtaLink: "/products?filter=top",
-    bgGradient: "from-slate-950 via-gray-900 to-indigo-950",
     accentIcon: ShoppingBag,
   },
 ];
+
+const gradientClasses: Record<number, string> = {
+  1: "from-gray-950/80 via-gray-900/80 to-stone-950/80",
+  2: "from-stone-950/80 via-zinc-900/80 to-amber-950/80",
+  3: "from-slate-950/80 via-gray-900/80 to-indigo-950/80",
+};
 
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
@@ -125,10 +127,14 @@ export default function HeroCarousel() {
               isActive ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
             }`}
           >
-            {/* Background gradient & SVG overlay pattern */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${slide.bgGradient}`} />
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMwLTkuOTQtOC4wNi0xOC0xOC0xOCIgc3Ryb2tlPSIjZmZmZmZmMDgiIHN0cm9rZS13aWR0aD0iMC41Ii8+PC9nPjwvc3ZnPg==')] opacity-25" />
-            <div className="absolute inset-0 bg-black/40" />
+            {/* Real background image */}
+            <div
+              className="absolute in set-0 bg-cover bg-center opacity-100"
+              style={{ backgroundImage: "url('/assets/image.png')" }}
+            />
+            <div
+              className={`absolute inset-0bg-gradient-to-r ${gradientClasses[slide.id] ?? "from-gray-950/80 via-gray-900/80 to-stone-950/80"}`}
+            />
 
             {/* Slide content container */}
             <div className="relative h-full max-w-5xl mx-auto flex flex-col items-center justify-center text-center px-6 pt-10">

@@ -6,13 +6,7 @@ import { authenticat, authorization } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.patch(
-  "/",
-  authenticat,
-  authorization,
-  uploads.single("image"),
-  asyncHandler(categoryController.create),
-);
+router.post("/", authenticat, authorization, uploads.single("image"), asyncHandler(categoryController.create));
 router.get("/", asyncHandler(categoryController.getAll));
 router.get("/:id", asyncHandler(categoryController.getById));
 router.put(

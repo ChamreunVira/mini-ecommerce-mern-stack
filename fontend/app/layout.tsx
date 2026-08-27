@@ -15,7 +15,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
+      <body className="font-khmer antialiased">
         <StoreProvider>
           <ToastProvider>{children}</ToastProvider>
         </StoreProvider>

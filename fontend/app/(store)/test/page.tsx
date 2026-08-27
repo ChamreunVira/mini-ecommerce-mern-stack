@@ -5,17 +5,15 @@ import { useEffect } from "react";
 
 const page = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector(state => state.categories)
+  const { categories, loading, error } = useAppSelector((state) => state.categories);
+
   useEffect(() => {
     dispatch(fetchCategories());
   }, [dispatch]);
 
   if (loading) return <p>Loading...</p>;
-  return (
-    <div>
-      {JSON.stringify(data)}
-    </div>
-  )
-}
+
+  return <div>{JSON.stringify(categories)}</div>;
+};
 
 export default page

@@ -1,6 +1,7 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { Product, ProductVariant, ProductSize } from "@/types";
 import { commit, FieldErrors, isBlank, outOfRange } from "./support";
+import { http } from "../axios";
 
 export interface VariantInput {
   color: string;
@@ -63,6 +64,8 @@ function normalize(input: ProductInput) {
   };
 }
 
+const endPoint = "/products";
+
 export const productService = {
   create(input: ProductInput): Promise<Product> {
     return commit(validateProduct(input), () => ({
@@ -87,6 +90,11 @@ export const productService = {
   setStatus(id: string, status: string): Promise<{ id: string; status: string }> {
     return commit<ProductInput, { id: string; status: string }>({}, () => ({ id, status }));
   },
+
+  getAll: async () => {
+    const response = await http.get(endPoint);
+    return response.data;
+  }
 };
 
 export function toProductInput(product: Product): ProductInput {

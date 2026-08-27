@@ -7,27 +7,17 @@ type DestinationCallback = (error: Error | null, destination: string) => void;
 type FilenameCallback = (error: Error | null, destination: string) => void;
 
 const storage = multer.diskStorage({
-  destination: (
-    req: Request,
-    file: Express.Multer.File,
-    cb: DestinationCallback,
-  ) => {
+  destination: (req: Request, file: Express.Multer.File, cb: DestinationCallback) => {
     cb(null, "uploads/");
   },
   filename: (req: Request, file: Express.Multer.File, cb: FilenameCallback) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`,
+    cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`,
     );
   },
 });
 
-const fileFilter = (
-  req: Request,
-  file: Express.Multer.File,
-  cb: multer.FileFilterCallback,
-) => {
+const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowType = ["image/png", "image/jpg", "image/jpeg", "image/webp"];
   if (allowType.includes(file.mimetype)) {
     cb(null, true);

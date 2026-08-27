@@ -1,17 +1,17 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import { uploads } from "../config/multer.js";
+import { uploadController } from "../controller/upload.controller.js";
+import { asyncHandler } from "../middleware/asyncHandler.js";
 
 const router = Router();
 
-router.post("/", uploads.array("images"), (req: Request, res: Response) => {
-  const fileNames = Array.isArray(req.files)
-    ? req.files.map((file: Express.Multer.File) => file.filename)
-    : [];
-
-  res.status(200).json({
-    message: "Upload successfully.",
-    data: fileNames,
-  });
-});
+router.post(
+  "/",
+  uploads.fields([
+    { name: "image", maxCount: 1 },
+    { name: "images", maxCount: 10 },
+  ]),
+  asyncHandler(uploadController.uploaded),
+);
 
 export default router;

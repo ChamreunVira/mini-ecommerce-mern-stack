@@ -30,7 +30,20 @@ export const categoryController = {
   },
 
   getAll: async (req: Request, res: Response) => {
-    const categories = await Category.find().sort({ createdAt: -1 });
+
+    const status = req.query.status;
+
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "category",
+          as: "products"
+        }
+      }
+    ]);
+
     res.status(200).json({
       success: true,
       message: "Successfully retrieved all categories.",

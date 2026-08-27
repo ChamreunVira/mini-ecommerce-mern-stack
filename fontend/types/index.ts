@@ -36,10 +36,15 @@ export interface UserItem {
 }
 
 export interface Category {
+  _id: string;
   name: string;
+  slug: string;
   description?: string;
   image: string;
+  products: Product[];
   status: boolean;
+  createdAt: Date,
+  updatedAt: Date
 }
 
 // ─── Product ─────────────────────────────────────────────────────────────────

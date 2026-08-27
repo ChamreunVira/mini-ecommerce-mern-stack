@@ -1,10 +1,13 @@
 import { Document, Schema, model } from "mongoose";
+import slugify from "slugify";
 
 export interface ICategory extends Document {
   name: string;
+  slug: string;
   description?: string;
   image: string;
   status: boolean;
+  productCount: number;
 }
 
 const categorySchema = new Schema<ICategory>(
@@ -16,6 +19,10 @@ const categorySchema = new Schema<ICategory>(
       trim: true,
       unique: true,
       required: true,
+    },
+    slug: {
+      type: String,
+      unique: true,
     },
     description: {
       type: String,
@@ -33,5 +40,13 @@ const categorySchema = new Schema<ICategory>(
   },
   { timestamps: true },
 );
+
+categorySchema.pre<ICategory>("save", function (this) {
+  this.slug = slugify(this.name, {
+    lower: true,
+    strict: true,
+    trim: true
+  });
+});
 
 export default model("Category", categorySchema);

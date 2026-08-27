@@ -10,12 +10,17 @@ import dashboardReducer from "./slices/dashboardSlice";
 import settingsReducer from "./slices/settingsSlice";
 import cartReducer from "./slices/cartSlice";
 import wishlistReducer from "./slices/wishlistSlice";
+import categoryReducer from "./slices/categorySlice";
 import uiReducer from "./slices/uiSlice";
 
 export function makeStore() {
+  const categoryReducerInstance =
+    "reducer" in categoryReducer ? categoryReducer.reducer : categoryReducer;
+
   return configureStore({
     reducer: {
       auth: authReducer,
+      categories: categoryReducer,
       products: productsReducer,
       coupons: couponsReducer,
       users: usersReducer,

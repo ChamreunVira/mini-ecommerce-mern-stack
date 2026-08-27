@@ -35,6 +35,13 @@ export interface UserItem {
   avatar: string | null;
 }
 
+export interface Category {
+  name: string;
+  description?: string;
+  image: string;
+  status: boolean;
+}
+
 // ─── Product ─────────────────────────────────────────────────────────────────
 
 export type ProductSize = "S" | "M" | "L" | "XL" | "2XL";

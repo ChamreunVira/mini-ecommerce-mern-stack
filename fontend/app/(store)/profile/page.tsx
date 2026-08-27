@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { User, MapPin, Package, Heart, Edit, Save } from "lucide-react";
+import { Edit, Save } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { showToast } from "@/store/slices/uiSlice";
+import AccountSidebar from "@/components/store/AccountSidebar";
 
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
@@ -26,41 +26,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
       <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight mb-8">
         គណនីរបស់ខ្ញុំ
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Navigation Sidebar */}
-        <aside className="lg:col-span-3 space-y-1">
-          <Link
-            href="/profile"
-            className="flex items-center gap-2.5 px-4 py-3 bg-[#0a0a0a] text-white text-sm font-semibold rounded-sm"
-          >
-            <User size={16} /> ព័ត៌មានផ្ទាល់ខ្លួន
-          </Link>
-          <Link
-            href="/profile/addresses"
-            className="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-sm transition-colors"
-          >
-            <MapPin size={16} /> អាសយដ្ឋាន
-          </Link>
-          <Link
-            href="/orders"
-            className="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-sm transition-colors"
-          >
-            <Package size={16} /> ការបញ្ជាទិញ
-          </Link>
-          <Link
-            href="/wishlist"
-            className="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-sm transition-colors"
-          >
-            <Heart size={16} /> បញ្ជីចំណូលចិត្ត
-          </Link>
-        </aside>
+        <AccountSidebar />
 
-        {/* Content Form */}
         <div className="lg:col-span-9 border border-gray-200 rounded-sm p-6 lg:p-8 space-y-6">
           <div className="flex items-center justify-between border-b border-gray-200 pb-4">
             <div>
@@ -135,9 +108,9 @@ export default function ProfilePage() {
                 onChange={(e) => setForm({ ...form, gender: e.target.value as "M" | "F" | "O" })}
                 className="w-full px-3.5 py-2.5 border border-gray-300 text-sm rounded-sm focus:outline-none focus:border-[#0a0a0a] disabled:bg-gray-50 disabled:text-gray-500 bg-white transition-colors"
               >
-                <option value="M">ប្រុស (Male)</option>
-                <option value="F">ស្រី (Female)</option>
-                <option value="O">ផ្សេងៗ (Other)</option>
+                <option value="M">ប្រុស</option>
+                <option value="F">ស្រី</option>
+                <option value="O">ផ្សេងៗ</option>
               </select>
             </div>
           </form>

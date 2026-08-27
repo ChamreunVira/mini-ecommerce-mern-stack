@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { User, MapPin, Package, Heart, Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { useAppDispatch } from "@/store/store";
 import { showToast } from "@/store/slices/uiSlice";
 import { IAddress } from "@/types";
+import AccountSidebar from "@/components/store/AccountSidebar";
 
 const INITIAL_ADDRESSES: IAddress[] = [
   {
@@ -45,9 +45,7 @@ export default function AddressBookPage() {
   });
 
   const handleSetDefault = (id?: string) => {
-    setAddresses((prev) =>
-      prev.map((a) => ({ ...a, isDefault: a._id === id })),
-    );
+    setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a._id === id })));
     dispatch(showToast({ message: "បានកំណត់ជាអាសយដ្ឋានលំនាំដើមរួចរាល់" }));
   };
 
@@ -70,29 +68,14 @@ export default function AddressBookPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
       <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight mb-8">
         អាសយដ្ឋានដឹកជញ្ជូន
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Navigation Sidebar */}
-        <aside className="lg:col-span-3 space-y-1">
-          <Link href="/profile" className="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-sm transition-colors">
-            <User size={16} /> ព័ត៌មានផ្ទាល់ខ្លួន
-          </Link>
-          <Link href="/profile/addresses" className="flex items-center gap-2.5 px-4 py-3 bg-[#0a0a0a] text-white text-sm font-semibold rounded-sm">
-            <MapPin size={16} /> អាសយដ្ឋាន
-          </Link>
-          <Link href="/orders" className="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-sm transition-colors">
-            <Package size={16} /> ការបញ្ជាទិញ
-          </Link>
-          <Link href="/wishlist" className="flex items-center gap-2.5 px-4 py-3 text-gray-700 hover:bg-gray-100 text-sm font-medium rounded-sm transition-colors">
-            <Heart size={16} /> បញ្ជីចំណូលចិត្ត
-          </Link>
-        </aside>
+        <AccountSidebar />
 
-        {/* Address Cards & Add Form */}
         <div className="lg:col-span-9 space-y-6">
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500">អាសយដ្ឋានដែលបានរក្សាទុក ({addresses.length})</p>
@@ -105,7 +88,6 @@ export default function AddressBookPage() {
             </button>
           </div>
 
-          {/* Add New Address Form */}
           {showAddForm && (
             <form onSubmit={handleAddSubmit} className="border border-[#0a0a0a] rounded-sm p-6 space-y-4 bg-gray-50">
               <h3 className="font-bold text-sm text-[#0a0a0a]">បន្ថែមអាសយដ្ឋានថ្មី</h3>
@@ -179,46 +161,52 @@ export default function AddressBookPage() {
             </form>
           )}
 
-          {/* List */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {addresses.map((addr) => (
-              <div
-                key={addr._id}
-                className={`border p-5 rounded-sm space-y-3 relative ${
-                  addr.isDefault ? "border-[#0a0a0a] bg-gray-50/50" : "border-gray-200"
-                }`}
-              >
-                {addr.isDefault && (
-                  <span className="inline-flex items-center gap-1 bg-[#0a0a0a] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
-                    <CheckCircle2 size={11} /> លំនាំដើម
-                  </span>
-                )}
-                <div>
-                  <p className="font-bold text-sm text-[#0a0a0a]">{addr.fullName}</p>
-                  <p className="text-xs text-gray-500">{addr.phone}</p>
-                  <p className="text-xs text-gray-700 mt-1">{addr.address}, {addr.city}, {addr.province}</p>
-                </div>
-                <div className="flex items-center gap-3 pt-2 border-t border-gray-100 text-xs">
-                  {!addr.isDefault && (
+          {addresses.length === 0 ? (
+            <div className="py-16 text-center border border-gray-200 rounded-sm space-y-2">
+              <p className="text-sm font-semibold text-[#0a0a0a]">អ្នកមិនទាន់មានអាសយដ្ឋានទេ</p>
+              <p className="text-xs text-gray-500">បន្ថែមអាសយដ្ឋានដំបូងរបស់អ្នកខាងលើ</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {addresses.map((addr) => (
+                <div
+                  key={addr._id}
+                  className={`border p-5 rounded-sm space-y-3 relative ${
+                    addr.isDefault ? "border-[#0a0a0a] bg-gray-50/50" : "border-gray-200"
+                  }`}
+                >
+                  {addr.isDefault && (
+                    <span className="inline-flex items-center gap-1 bg-[#0a0a0a] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
+                      <CheckCircle2 size={11} /> លំនាំដើម
+                    </span>
+                  )}
+                  <div>
+                    <p className="font-bold text-sm text-[#0a0a0a]">{addr.fullName}</p>
+                    <p className="text-xs text-gray-500">{addr.phone}</p>
+                    <p className="text-xs text-gray-700 mt-1">{addr.address}, {addr.city}, {addr.province}</p>
+                  </div>
+                  <div className="flex items-center gap-3 pt-2 border-t border-gray-100 text-xs">
+                    {!addr.isDefault && (
+                      <button
+                        type="button"
+                        onClick={() => handleSetDefault(addr._id)}
+                        className="font-semibold text-gray-600 hover:text-[#0a0a0a]"
+                      >
+                        កំណត់ជាលំនាំដើម
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => handleSetDefault(addr._id)}
-                      className="font-semibold text-gray-600 hover:text-[#0a0a0a]"
+                      onClick={() => handleDelete(addr._id)}
+                      className="text-red-500 hover:text-red-700 ml-auto flex items-center gap-1"
                     >
-                      កំណត់ជាលំនាំដើម
+                      <Trash2 size={12} /> លុប
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(addr._id)}
-                    className="text-red-500 hover:text-red-700 ml-auto flex items-center gap-1"
-                  >
-                    <Trash2 size={12} /> លុប
-                  </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

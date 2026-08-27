@@ -7,7 +7,7 @@ export const paymentController = {
     create: async (req: Request, res: Response) => {
         const userId = req.user?._id;
         const { orderId } = req.body;
-        if (!orderId) res.status(400).json({ message: "Order id is required." });
+        if (!orderId) return res.status(400).json({ message: "Order id is required." });
         if (!userId) throw new AppError(404, "Unauthorize");
 
         const order = await Order.findOne({
@@ -25,7 +25,7 @@ export const paymentController = {
         });
 
         if (existsPayment) {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Payment is already created.",
                 data: existsPayment
             });
@@ -34,7 +34,7 @@ export const paymentController = {
         const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
 
         const newPayment = new Payment({
-            orderId: order._id,
+            order: order._id,
             status: "PENDING",
             transactionId,
             amount: order.total,
@@ -43,7 +43,7 @@ export const paymentController = {
 
         const savedPayment = await newPayment.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Payment successfully.",
             data: savedPayment
         });

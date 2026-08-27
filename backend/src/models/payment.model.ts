@@ -32,7 +32,7 @@ const paymentSchema = new Schema<IPayment>({
   },
   status: {
     type: String,
-    enum: ["UNPAID", "PEDING", "PAID", "FAILED"],
+    enum: ["UNPAID", "PENDING", "PAID", "FAILED"],
     default: "PENDING",
     required: true,
   },
